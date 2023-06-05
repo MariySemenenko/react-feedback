@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Ul } from '../feedback.styled';
 
+//створюю список в якому відображаю елементи
+//зворотнього звязку
 export const Statistics = ({
   good,
   neutral,
