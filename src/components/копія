@@ -1,0 +1,701 @@
+import React, { useState } from 'react';
+import breakfast from '../../images/illustration/breakfast-image.svg';
+//import faTrash from '../../components/DiaryOnMain/img/basket.svg'
+import css from './diaryOnMain.module.css';
+import { useDispatch } from 'react-redux';
+import { fetchGoalsConfirm } from 'redux/usersGoal/operations';
+
+
+const MealModal = ({ isOpen, onClose, mealName  }) => {
+  const dispatch = useDispatch();
+  const [placeholderData, setPlaceholderData] = useState({
+    name: '',
+    carbohydrates: '',
+    protein: '',
+    fat: '',
+    calories: '',
+  });
+
+  const initialInputFields = [
+    { name: '', carbohydrates: '', protein: '', fat: '', calories: '' },
+  ];
+
+  const [inputFields, setInputFields] = useState(initialInputFields);
+  if (!isOpen) return null;
+
+  const handleAddField = () => {
+    setInputFields([
+      ...inputFields,
+      { name: '', carbohydrates: '', protein: '', fat: '', calories: '' },
+    ]);
+  };
+
+  const handleInputChange = (index, event) => {
+    const { name, value } = event.target;
+    const newInputFields = [...inputFields];
+    newInputFields[index][name] = value;
+    setInputFields(newInputFields);
+
+    //update placeholder
+    setPlaceholderData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
+  
+  
+
+  const handleConfirm = async () => {
+    try {
+      await dispatch(fetchGoalsConfirm(placeholderData));
+      setPlaceholderData({
+        name: '',
+        carbohydrates: '',
+        protein: '',
+        fat: '',
+        calories: '',
+      });
+      
+      setInputFields(initialInputFields);
+  
+    } catch (error) {
+      console.error('Помилка під час відправки на бекенд:', error);
+    }
+  };
+
+  // const handleConfirm = async () => {
+  //   try {
+  //     if (mealName === 'breakfast') {
+  //       await dispatch(fetchGoalsConfirm(placeholderData));
+  //     } else if (mealName === 'lunch') {
+  //       await dispatch(fetchGoalsLunchConfirm(placeholderData));
+  //     }
+
+  
+  //   } catch (error) {
+  //     console.error('Помилка під час відправки на бекенд:', error);
+  //   }
+  // };
+
+  const handleRemoveField = index => {
+    const newInputFields = [...inputFields];
+    newInputFields.splice(index, 1);
+    setInputFields(newInputFields);
+  };
+
+  return (
+    <div className={css.overlay} style={{ display: isOpen ? 'block' : 'none' }}>
+      <div>
+        <h2 className={css.img}>Record your meal</h2>
+        <div className={css.flexContainer}>
+          <img className={css.breakfast} src={breakfast} alt="breakfast" />
+          <h2 className={css.img}>{mealName}</h2>
+        </div>
+
+
+        {inputFields.map((field, index) => (
+          <div className={css.containerLabel} key={index}>
+
+
+            <label htmlFor={`productName${index}`}></label>
+            <input
+              style={{
+                border: '1px solid rgba(227, 255, 168, 1)',
+                borderRadius: '12px',
+                width: '255px',
+                height: '36px',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'rgba(182, 182, 182, 1)',
+                fontFamily: 'Poppins',
+
+                paddingLeft: '10px',
+                gap: '10px',
+                background: 'black',
+                marginRight: '10px',
+                marginLeft: '25px',
+              }}
+              placeholder="The name of the product or dish"
+              type="text"
+              id={`productName${index}`}
+              name="name"
+              value={field.name}
+              onChange={e => handleInputChange(index, e)}
+            />
+
+
+            <label htmlFor={`carbohydrates${index}`}></label>
+            <input
+              style={{
+                border: '1px solid rgba(227, 255, 168, 1)',
+                borderRadius: '12px',
+                width: '100px',
+                height: '36px',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'rgba(182, 182, 182, 1)',
+                font: 'Poppins',
+
+                paddingLeft: '10px',
+                gap: '10px',
+                background: 'black',
+                marginRight: '10px',
+              }}
+              placeholder="carbonoh."
+              type="text"
+              id={`carbohydrates${index}`}
+              name="carbohydrates"
+              value={field.carbohydrates}
+              onChange={e => handleInputChange(index, e)}
+            />
+
+
+            <label htmlFor={`protein${index}`}></label>
+            <input
+              style={{
+                border: '1px solid rgba(227, 255, 168, 1)',
+                borderRadius: '12px',
+                width: '86px',
+                height: '36px',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'rgba(182, 182, 182, 1)',
+                font: 'Poppins',
+
+                paddingLeft: '10px',
+                gap: '10px',
+                background: 'black',
+                marginRight: '10px',
+              }}
+              placeholder="Protein"
+              type="text"
+              id={`protein${index}`}
+              name="protein"
+              value={field.protein}
+              onChange={e => handleInputChange(index, e)}
+            />
+
+
+            <label htmlFor={`fat${index}`}></label>
+            <input
+              style={{
+                border: '1px solid rgba(227, 255, 168, 1)',
+                borderRadius: '12px',
+                width: '61px',
+                height: '36px',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'rgba(182, 182, 182, 1)',
+                font: 'Poppins',
+
+                paddingLeft: '10px',
+                gap: '10px',
+                background: 'black',
+                marginRight: '10px',
+              }}
+              placeholder="Fat"
+              type="text"
+              id={`fat${index}`}
+              name="fat"
+              value={field.fat}
+              onChange={e => handleInputChange(index, e)}
+            />
+
+            <label htmlFor={`calories${index}`}></label>
+            <input
+              style={{
+                border: '1px solid rgba(227, 255, 168, 1)',
+                borderRadius: '12px',
+                width: '78px',
+                height: '36px',
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: 'rgba(182, 182, 182, 1)',
+                font: 'Poppins',
+
+                paddingLeft: '10px',
+                gap: '10px',
+                background: 'black',
+                marginRight: '10px',
+              }}
+              placeholder="Calories"
+              type="text"
+              id={`calories${index}`}
+              name="calories"
+              value={field.calories}
+              onChange={e => handleInputChange(index, e)}
+            />
+
+            {index > 0 && (
+              <button
+                className={css.remove}
+                type="button"
+                onClick={() => handleRemoveField(index)}
+              >
+                remove
+                {/* <svg icon={faTrash} /> */}
+              </button>
+            )}
+          </div>
+        ))}
+
+       
+        <button className={css.addMore} type="button" onClick={handleAddField}>
+          + Add more
+        </button>
+      </div>
+      <div className={css.buttonConfirm}>
+        <button className={css.cancel} onClick={onClose}>
+          Cancel
+        </button>
+        <button className={css.confirm} onClick={handleConfirm}>Confirm</button>
+      </div>
+    </div>
+  );
+};
+export default MealModal;
+
+////////////////////////////////////////////////
+
+
+
+import axios from 'axios';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+//import { mealFields } from 'components/DiaryOnMain/MealModal';
+
+axios.defaults.baseURL = 'https://goit-healthy-hub.onrender.com/api';
+
+export function setHeadersToken(token) {
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
+export const fetchGoals = createAsyncThunk(
+  'user/statistics',
+  async (_, thunkAPI) => {
+    try {
+      setHeadersToken(thunkAPI.getState().auth.token);
+      const response = await axios.get('/user/statistics');
+
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+export const addWater = createAsyncThunk(
+  'user/water-intake',
+  async (quantity, thunkAPI) => {
+    try {
+      setHeadersToken(thunkAPI.getState().auth.token);
+      const response = await axios.post('/user/water-intake', {
+        water: quantity,
+      });
+
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+// diaryOnMain
+export const fetchGoalsConfirm = createAsyncThunk(
+  'user/food-intake',
+  async (breakfast, thunkAPI) => {
+    // console.log(breakfast);
+    try {
+      setHeadersToken(thunkAPI.getState().auth.token);
+      const response = await axios.post('/user/food-intake-v2', {
+        breakfast: [breakfast],
+      });
+
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+// export const fetchGoalsLunchConfirm = createAsyncThunk(
+//   'user/food-intake',
+//   async (lunch, thunkAPI) => {
+//     console.log(lunch);
+//     try {
+//       setHeadersToken(thunkAPI.getState().auth.token);
+//       const response = await axios.post('/user/food-intake-v2', {
+//         lunch: [lunch],
+//       });
+
+//       return response.data;
+//     } catch (e) {
+//       return thunkAPI.rejectWithValue(e.message);
+//     }
+//   }
+// );
+
+/////////////////////////////////////////////
+
+
+/* mobile menu 0- 349 */
+
+@media screen and (max-width: 300px) {
+  .containerDiary {
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .divBreakfastModal {
+   
+    margin-top: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .diary {
+    margin-right: 10px;
+    width: 57px;
+    height: 32px;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 32px;
+    color: rgba(255, 255, 255, 1);
+    
+  }
+  .link {
+    display: flex;
+    align-items: center;
+  }
+  .openModal {
+    /* width: 150px; */
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(227, 255, 168, 1);
+    background-color: black;
+    border: 1px solid transparent;
+   
+    cursor: pointer;
+    justify-content: center;
+    text-align: center;
+    display: block;
+  }
+
+  .diaryMobile {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .diaryBreakfast {
+    width: 100px;
+    height: 24px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    color: rgba(255, 255, 255, 1);
+    margin-left: 20px;
+    margin-right: 10px;
+  }
+}
+
+/* ////////////////////////////////////////// */
+@media screen and (min-width: 301px) {
+  .containerDiary {
+    width: 518px;
+    
+    padding-right: 10px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+.link {
+  display: flex;
+  align-items: center;
+  /* margin-top: 25px; */
+  /* margin-left: 25px; */
+}
+.diary {
+  margin-right: 10px;
+  width: 57px;
+  height: 32px;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 1);
+  
+}
+.seeMore {
+  width: auto;
+  height: 22px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  white-space: nowrap; /* Prohibit text wrapping on a new line */
+}
+.breakfastImage {
+  width: 36px;
+  height: 36px;
+  /* margin-left: 25px; */
+  margin-right: 10px;
+}
+.diaryBreakfast {
+  width: 100px;
+  height: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: rgba(255, 255, 255, 1);
+  margin-left: 25px;
+  margin-right: 10px;
+}
+.diaryMobile {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+ 
+}
+
+/* ////////////////////////////////////// */
+.overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* height: 408px; */
+  border-radius: 12px;
+  background-color: rgba(15, 15, 15, 1);
+  z-index: 1000;
+  display: none; /* Invisible by default*/
+  overflow-y: auto;
+}
+
+.img {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  
+  width: 268px;
+  height: 36px;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 36px;
+  color: rgba(255, 255, 255, 1);
+}
+
+.breakfast {
+  vertical-align: middle;
+  margin-left: 25px;
+  height: 32px;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 1);
+}
+.nameBreakfast {
+  width: 104px;
+  height: 32px;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 32px;
+  color: rgba(255, 255, 255, 1);
+}
+.flexContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  display: inline-flex;
+  
+}
+.containerLabel {
+  display: inline-flex;
+  margin-bottom: 20px;
+}
+
+.addMore {
+  height: 20px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(227, 255, 168, 1);
+  background: rgba(15, 15, 15, 1);
+  border: 1px solid transparent;
+  display: inline-block; /* elements are located on the same level*/
+  margin-top: 25px;
+  margin-left: 25px;
+}
+
+.remove {
+  background-color: rgba(15, 15, 15, 1);
+  color: rgba(227, 255, 168, 1);
+  font-size: 14px;
+  line-height: 20px;
+  border: 1px solid transparent;
+}
+.cancel {
+  color: rgba(182, 182, 182, 1);
+  font-size: 14px;
+  line-height: 20px;
+  border: 1px solid transparent;
+  background-color: rgba(15, 15, 15, 1);
+}
+.confirm {
+  width: 192px;
+  height: 20px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(15, 15, 15, 1);
+  background-color: rgba(227, 255, 168, 1);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center; /*Align text horizontally in the center */
+  align-items: center;
+  margin-left: 80px;
+  /* margin: 0; */
+}
+.buttonConfirm {
+  display: flex;
+  align-items: center; /* Align vertically in the center */
+  gap: 10px;
+  margin-top: 110px;
+  margin-left: 300px;
+  margin-bottom: 20px;
+}
+
+.seeMore {
+  width: auto; /* Let's change the width to auto so that the text can stretch to the entire available width */
+  height: 22px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  white-space: nowrap; /* 
+  Prohibit text wrapping on a new line */
+}
+.breakfastImage {
+  width: 36px;
+  height: 36px;
+  
+}
+.diaryBreakfast {
+  width: 100px;
+  height: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: rgba(255, 255, 255, 1);
+  margin-left: 25px;
+}
+.divBreakfast {
+  display: flex;
+ 
+  align-items: center;
+  margin-bottom: 10px;
+}
+.openModal {
+  width: 150px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(227, 255, 168, 1);
+  background-color: black;
+  border: 1px solid transparent;
+  padding: 5px 10px;
+  cursor: pointer;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+margin-top: 20px;
+}
+}
+
+///////////////////////////////////////////////////
+
+import css from './diaryOnMain.module.css';
+import { Link } from 'react-router-dom';
+import breakfastImage from '../../images/illustration/breakfast-image.svg';
+import lunchImage from '../../images/illustration/lunch-image.svg';
+import dinnerImage from '../../images/illustration/dinner-image.svg';
+import snackImage from '../../images/illustration/snack-image.svg';
+import React, { useState } from 'react';
+import MealModal from './MealModal';
+
+const DiaryOnMain = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedMeal, setSelectedMeal] = useState('');
+
+ const openModal = (mealName) => {
+    setSelectedMeal(mealName);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedMeal('');
+    setModalOpen(false);
+  };
+
+  return (
+    <div className={css.containerDiary}>
+      <div className={css.link}>
+        <h2 className={css.diary}>Diary</h2>
+        <Link to="/diary" className={css.seeMore}>
+          See More
+        </Link>
+      </div>
+
+
+      <div className={css.divBreakfast}>
+      <div className={css.diaryMobile}>
+        <img
+          className={css.breakfastImage}
+          src={breakfastImage}
+          alt="Breakfast"
+        />
+        <h2 className={css.diaryBreakfast}>Breakfast</h2>
+        </div>
+        <button className={css.openModal} onClick={() => openModal('Breakfast')}>
+          {' '}
+          + Record your meal
+        </button>
+      </div>
+      <MealModal isOpen={isModalOpen} onClose={closeModal} mealName={selectedMeal} />
+
+      <div className={css.divBreakfast}>
+      <div className={css.diaryMobile}>
+        <img className={css.breakfastImage} src={lunchImage} alt="Lunch" />
+        <h2 className={css.diaryBreakfast}>Lunch</h2>
+        </div>
+        <button className={css.openModal} onClick={() => openModal('Lunch')}>
+          {' '}
+          + Record your meal
+        </button>
+      </div>
+
+      <div className={css.divBreakfast}>
+      <div className={css.diaryMobile}>
+        <img className={css.breakfastImage} src={dinnerImage} alt="Dinner" />
+        <h2 className={css.diaryBreakfast}>Dinner</h2>
+        </div>
+        <button className={css.openModal} onClick={() => openModal('Dinner')}>
+          {' '}
+          + Record your meal
+        </button>
+      </div>
+
+      <div className={css.divBreakfast}>
+      <div className={css.diaryMobile}>
+        <img className={css.breakfastImage} src={snackImage} alt="Snack" />
+        <h2 className={css.diaryBreakfast}>Snack</h2>
+        </div>
+        <button className={css.openModal} onClick={() => openModal('Snack')}>
+          {' '}
+          + Record your meal
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default DiaryOnMain;
